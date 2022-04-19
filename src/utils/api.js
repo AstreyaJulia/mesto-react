@@ -1,3 +1,5 @@
+import {apiSettings} from "./utils";
+
 export class Api {
   /** @param options - опции для работы с API (serverURL - url сервера, headers - заголовки в виде объекта) */
   constructor(options) {
@@ -111,3 +113,7 @@ export class Api {
   }
 
 }
+
+/** Экземпляр API
+ * @type {Api} */
+export const api = new Api(apiSettings);

@@ -1,25 +1,37 @@
 import React from 'react';
-import profile__avatar from '../images/avatars/profile__avatar.jpg';
+import {Card} from "./Card";
 
-export const Main = () => {
+export const Main = (props) => {
+
+    /** Имя пользователя, подпись пользователя и аватар */
+    const {name, about, avatar} = props.currentUser;
+
     return (
         <main className="content">
             <section className="profile">
-                <button className="profile__edit-avatar-button button" aria-label="Редактировать аватар" />
-                <img src={profile__avatar} alt="Подпись"
-                     className="profile__avatar" />
-                    <div className="profile__title-group">
-                        <h1 className="profile__title">Имя пользователя</h1>
-                        <button className="profile__button button" type="button"
-                                aria-label="Редактировать профиль" />
-                        <p className="profile__about">Подпись пользователя</p>
-                    </div>
-                    <button className="profile__add-button button" type="button" aria-label="Добавить место" />
+                <button className="profile__edit-avatar-button button" aria-label="Редактировать аватар"/>
+                <img src={avatar} alt={name}
+                     className="profile__avatar"/>
+                <div className="profile__title-group">
+                    <h1 className="profile__title">{name}</h1>
+                    <button className="profile__button button" type="button"
+                            aria-label="Редактировать профиль"/>
+                    <p className="profile__about">{about}</p>
+                </div>
+                <button className="profile__add-button button" type="button" aria-label="Добавить место"/>
             </section>
             <section className="gallery">
                 <ul className="photo-cards">
+                    {props.cards
+                        ? Array.from(props.cards).map((card) => {
+                            return (<Card card={card}
+                                          key={card._id}
+                                          currentUser={props.currentUser} // id залогиненного пользователя из состояния currentUser
+                            />)
+                        })
+                        : null}
                 </ul>
             </section>
         </main>
-)
+    )
 };
