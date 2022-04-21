@@ -1,7 +1,8 @@
 import React from 'react';
 
 /** Всплывашка с изображением
- * @param props
+ * @param props:
+ * card - объект карточки
  * @returns {JSX.Element}
  * @constructor
  */
@@ -12,9 +13,9 @@ export const ImagePopup = (props) => {
 
     return (
         <div className={link !== '' ? "popup popup_opened popup_view_image" : "popup popup_view_image"}>
-            <div className="popup__container popup__container_image-view">
+            <div className="popup__container popup__container_view_image">
                 <button className="popup__close-button button" type="button"
-                        aria-label="Закрыть всплывающее окно"/>
+                        aria-label="Закрыть всплывающее окно" onClick={props.onClose}/>
                 <figure className="popup__figure">
                     <img className="popup__image" src={link}
                          alt={name}/>
