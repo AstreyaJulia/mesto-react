@@ -1,6 +1,11 @@
 import React from 'react';
 import {Card} from "./Card";
 
+/** Основной контейнер с содержимым страницы
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Main = (props) => {
 
     /** Имя пользователя, подпись пользователя и аватар */

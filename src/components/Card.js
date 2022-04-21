@@ -1,5 +1,10 @@
 import React from 'react';
 
+/** Карточка изображения
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Card = (props) => {
 
     /** Название карточки, ссылка на изображение, владелец карточки, массив лайков */

@@ -4,6 +4,10 @@ import {Footer} from "./Footer";
 import {Main} from "./Main";
 import {api} from '../utils/api.js';
 
+/**
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function App() {
 
     /** Состояние currentUser текущего пользователя */
