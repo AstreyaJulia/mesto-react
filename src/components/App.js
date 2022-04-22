@@ -94,9 +94,7 @@ function App() {
 
     return (
         <div className="App">
-
             <Header/>
-
             <Main
                 currentUser={currentUser} // id залогиненного пользователя
                 cards={cards} // массив карточек
@@ -106,9 +104,7 @@ function App() {
                 onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
                 onDeleteCard={handleDeletePlaceClick} // удаление карточки
             />
-
             <Footer/>
-
             {/** Всплывашка редактирования профиля */}
             <PopupWithForm popupOpen={editProfilePopupOpen} popupType="edit_profile" popupTitle="Редактировать профиль"
                            popupFormName="profileForm" submitButtonText="Сохранить" onClose={closeAllPopups}>
@@ -125,7 +121,6 @@ function App() {
                     </label>
                 </fieldset>
             </PopupWithForm>
-
             {/** Всплывашка добавления новой карточки */}
             <PopupWithForm popupOpen={newPlacePopupOpen} popupType="new-place" popupTitle="Новое место"
                            popupFormName="newPlaceForm"
@@ -144,15 +139,12 @@ function App() {
                     </label>
                 </fieldset>
             </PopupWithForm>
-
             {/** Всплывашка просмотра карточки */}
             <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
-
             {/** Всплывашка удаления карточки */}
             <PopupWithForm popupOpen={deletePlacePopupOpen} popupType="delete-place" popupTitle="Вы уверены?"
                            submitButtonText="Да" onClose={closeAllPopups}>
             </PopupWithForm>
-
             {/** Всплывашка редактирования аватара */}
             <PopupWithForm popupOpen={updateAvatarPopupOpen} popupType="update-avatar" popupTitle="Обновить аватар"
                            popupFormName="updateAvatarForm" submitButtonText="Сохранить" onClose={closeAllPopups}>
@@ -165,7 +157,6 @@ function App() {
                     </label>
                 </fieldset>
             </PopupWithForm>
-
         </div>
     );
 }
