@@ -5,7 +5,7 @@ import React from 'react';
  * @returns {JSX.Element}
  * @constructor
  */
-export const Card = (props) => {
+const Card = (props) => {
 
     /** Название карточки, ссылка на изображение, владелец карточки, массив лайков */
     const {name, link, owner, likes} = props.card;
@@ -37,3 +37,5 @@ export const Card = (props) => {
         </li>
     )
 };
+
+export default Card

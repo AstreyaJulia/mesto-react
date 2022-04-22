@@ -1,12 +1,12 @@
 import React from 'react';
-import {Card} from "./Card";
+import Card from "./Card";
 
 /** Основной контейнер с содержимым страницы
  * @param props
  * @returns {JSX.Element}
  * @constructor
  */
-export const Main = (props) => {
+const Main = (props) => {
 
     /** Имя пользователя, подпись пользователя и аватар */
     const {name, about, avatar} = props.currentUser;
@@ -44,3 +44,5 @@ export const Main = (props) => {
         </main>
     )
 };
+
+export default Main

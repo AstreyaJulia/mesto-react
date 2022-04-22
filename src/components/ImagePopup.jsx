@@ -6,7 +6,7 @@ import React from 'react';
  * @returns {JSX.Element}
  * @constructor
  */
-export const ImagePopup = (props) => {
+const ImagePopup = (props) => {
 
     /** Название карточки, ссылка на изображение */
     const {name, link} = props.card;
@@ -25,3 +25,5 @@ export const ImagePopup = (props) => {
         </div>
     )
 };
+
+export default ImagePopup

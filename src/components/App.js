@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Header} from "./Header";
-import {Footer} from "./Footer";
-import {Main} from "./Main";
+import Header from "./Header";
+import Footer from "./Footer";
+import Main from "./Main";
 import {api} from '../utils/api.js';
-import {PopupWithForm} from "./PopupWithForm";
-import {ImagePopup} from "./ImagePopup";
+import PopupWithForm from "./PopupWithForm";
+import ImagePopup from "./ImagePopup";
 
 /**
  * @returns {JSX.Element}
