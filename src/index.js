@@ -15,4 +15,4 @@ root.render(
 // передать ф-ю для логирования результатов
 // (например: reportWebVitals(console.log))
 // или отправить для аналитики. Узнать больше: https://bit.ly/CRA-vitals
-reportWebVitals(console.log);
+reportWebVitals();

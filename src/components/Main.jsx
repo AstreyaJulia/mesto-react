@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from "./Card";
+import {api} from "../utils/api";
 
 /** Основной контейнер с содержимым страницы
  * @param props
@@ -8,8 +9,33 @@ import Card from "./Card";
  */
 const Main = (props) => {
 
+    /** Состояние текущего пользователя */
+    const [currentUser, setCurrentUser] = useState({});
+
+    /** Состояние массива карточек */
+    const [cards, setCards] = useState([]);
+
+    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
+    useEffect(() => {
+        api.getUserInfo()
+            .then((res) => {
+                setCurrentUser(res);
+            })
+            .catch((err) => console.log(err))
+    }, []);
+
+    /** Получаем массив карточек, пишем в состояние cards */
+    useEffect(() => {
+        api.getCards()
+            .then((cardsArray) => {
+                setCards(cardsArray);
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
+
     /** Имя пользователя, подпись пользователя и аватар */
-    const {name, about, avatar} = props.currentUser;
+    const {name, about, avatar} = currentUser;
 
     return (
         <main className="content">
@@ -29,11 +55,11 @@ const Main = (props) => {
             </section>
             <section className="gallery">
                 <ul className="photo-cards">
-                    {props.cards
-                        ? Array.from(props.cards).map((card) => {
+                    {cards
+                        ? Array.from(cards).map((card) => {
                             return (<Card card={card}
                                           key={card._id}
-                                          currentUser={props.currentUser} // id залогиненного пользователя из состояния currentUser
+                                          currentUser={currentUser} // id залогиненного пользователя из состояния currentUser
                                           onCardClick={props.onCardClick} // нажатие на карточку
                                           onDeleteCard={props.onDeleteCard}
                             />)

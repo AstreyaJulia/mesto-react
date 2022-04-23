@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
-import {api} from '../utils/api.js';
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 
@@ -11,12 +10,6 @@ import ImagePopup from "./ImagePopup";
  * @constructor
  */
 function App() {
-
-    /** Состояние текущего пользователя */
-    const [currentUser, setCurrentUser] = useState({});
-
-    /** Состояние массива карточек */
-    const [cards, setCards] = useState({});
 
     /** Состояние выбранной карточки */
     const [selectedCard, setSelectedCard] = React.useState({name: "", link: ""});
@@ -74,30 +67,10 @@ function App() {
         console.log(evt)
     }
 
-    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
-    useEffect(() => {
-        api.getUserInfo()
-            .then((res) => {
-                setCurrentUser(res);
-            })
-            .catch((err) => console.log(err))
-    }, []);
-
-    /** Получаем массив карточек, пишем в состояние cards */
-    useEffect(() => {
-        api.getCards()
-            .then((cardsArray) => {
-                setCards(cardsArray);
-            })
-            .catch((err) => console.log(err));
-    }, []);
-
     return (
         <div className="App">
             <Header/>
             <Main
-                currentUser={currentUser} // id залогиненного пользователя
-                cards={cards} // массив карточек
                 onCardClick={handleCardClick} // нажатие на карточку
                 onEditProfile={handleEditProfileClick} // редактирование профиля
                 onNewPlace={handleNewPlaceClick} // добавление карточки
