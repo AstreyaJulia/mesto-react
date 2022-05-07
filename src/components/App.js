@@ -16,6 +16,9 @@ function App() {
     /** Состояние текущего пользователя */
     const [currentUser, setCurrentUser] = useState({});
 
+    /** Состояние массива карточек */
+    const [cards, setCards] = useState([]);
+
     /** Состояние выбранной карточки */
     const [selectedCard, setSelectedCard] = React.useState({name: "", link: ""});
 
@@ -81,11 +84,21 @@ function App() {
             .catch((err) => console.log(err))
     }, []);
 
+    /** Получаем массив карточек, пишем в состояние cards */
+    useEffect(() => {
+        api.getCards()
+            .then((cardsArray) => {
+                setCards(cardsArray);
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="App">
                 <Header/>
                 <Main
+                    cards={cards}
                     onCardClick={handleCardClick} // нажатие на карточку
                     onEditProfile={handleEditProfileClick} // редактирование профиля
                     onNewPlace={handleNewPlaceClick} // добавление карточки

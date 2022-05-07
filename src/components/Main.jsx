@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Card from "./Card";
-import {api} from "../utils/api";
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
 
 /** Основной контейнер с содержимым страницы
@@ -13,18 +12,6 @@ const Main = (props) => {
     /** Имя пользователя, подпись пользователя и аватар из контекста currentUser */
     const currentUser = React.useContext(CurrentUserContext);
     const {name, about, avatar} = currentUser;
-
-    /** Состояние массива карточек */
-    const [cards, setCards] = useState([]);
-
-    /** Получаем массив карточек, пишем в состояние cards */
-    useEffect(() => {
-        api.getCards()
-            .then((cardsArray) => {
-                setCards(cardsArray);
-            })
-            .catch((err) => console.log(err));
-    }, []);
 
     return (
         <main className="content">
@@ -44,8 +31,8 @@ const Main = (props) => {
             </section>
             <section className="gallery">
                 <ul className="photo-cards">
-                    {cards
-                        ? Array.from(cards).map((card) => {
+                    {props.cards
+                        ? Array.from(props.cards).map((card) => {
                             return (<Card card={card}
                                           key={card._id}
                                           onCardClick={props.onCardClick} // нажатие на карточку
