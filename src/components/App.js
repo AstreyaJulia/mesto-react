@@ -70,6 +70,28 @@ function App() {
         setDeletePlacePopupOpen(false);
     }
 
+    /** Ставит/удаляет лайк
+     * @param card - объект карточки */
+    function handleCardLike(card) {
+        const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+        api.changeLikeCardStatus(card._id, !isLiked)
+            .then((newCard) => {
+                setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+            })
+            .catch((err) => console.log(err));
+    }
+
+    /** Удаляет карточку
+     * @param card - объект карточки */
+    function handleCardDelete(card) {
+        api.deleteCard(card._id)
+            .then(() => {
+                setCards(cards.filter(currentCard => currentCard !== card));
+            })
+            .catch((err) => console.log(err));
+    }
+
     /** Заглушка, чтоб реакт не сыпал ошибки в консоли */
     function handleInputChange(evt) {
         console.log(evt)
