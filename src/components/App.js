@@ -57,6 +57,7 @@ function App() {
     }
 
     /** Открывает всплывашку удаления карточки */
+    // FIXME отключена, удаляет без подтверждения
     function handleDeletePlaceClick() {
         setDeletePlacePopupOpen(true);
     }
@@ -93,6 +94,7 @@ function App() {
     }
 
     /** Заглушка, чтоб реакт не сыпал ошибки в консоли */
+    // FIXME не забыть удалить
     function handleInputChange(evt) {
         console.log(evt)
     }
@@ -125,7 +127,8 @@ function App() {
                     onEditProfile={handleEditProfileClick} // редактирование профиля
                     onNewPlace={handleNewPlaceClick} // добавление карточки
                     onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
-                    onDeleteCard={handleDeletePlaceClick} // удаление карточки
+                    onCardDelete={handleCardDelete} // удаление карточки
+                    onCardLike={handleCardLike} // лайк/дизлайк
                 />
                 <Footer/>
                 {/** Всплывашка редактирования профиля */}
