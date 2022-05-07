@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Card from "./Card";
 import {api} from "../utils/api";
+import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
 
 /** Основной контейнер с содержимым страницы
  * @param props
@@ -9,20 +10,12 @@ import {api} from "../utils/api";
  */
 const Main = (props) => {
 
-    /** Состояние текущего пользователя */
-    const [currentUser, setCurrentUser] = useState({});
+    /** Имя пользователя, подпись пользователя и аватар из контекста currentUser */
+    const currentUser = React.useContext(CurrentUserContext);
+    const {name, about, avatar} = currentUser;
 
     /** Состояние массива карточек */
     const [cards, setCards] = useState([]);
-
-    /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
-    useEffect(() => {
-        api.getUserInfo()
-            .then((res) => {
-                setCurrentUser(res);
-            })
-            .catch((err) => console.log(err))
-    }, []);
 
     /** Получаем массив карточек, пишем в состояние cards */
     useEffect(() => {
@@ -32,10 +25,6 @@ const Main = (props) => {
             })
             .catch((err) => console.log(err));
     }, []);
-
-
-    /** Имя пользователя, подпись пользователя и аватар */
-    const {name, about, avatar} = currentUser;
 
     return (
         <main className="content">
@@ -59,7 +48,6 @@ const Main = (props) => {
                         ? Array.from(cards).map((card) => {
                             return (<Card card={card}
                                           key={card._id}
-                                          currentUser={currentUser} // id залогиненного пользователя из состояния currentUser
                                           onCardClick={props.onCardClick} // нажатие на карточку
                                           onDeleteCard={props.onDeleteCard}
                             />)
