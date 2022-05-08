@@ -13,12 +13,6 @@ const EditAvatarPopup = (props) => {
         })
     }
 
-    /** Заглушка, чтоб реакт не сыпал ошибки в консоли */
-    // FIXME не забыть удалить
-    function handleInputChange(evt) {
-        console.log(evt);
-    }
-
     React.useEffect(() => {
         refAvatar.current.value = '';
     }, [props.popupOpen]);
@@ -42,12 +36,10 @@ const EditAvatarPopup = (props) => {
                         className="popup__input"
                         type="url"
                         placeholder="Ссылка на аватар"
-                        value=""
                         name="avatar"
                         id="avatar_url"
                         required
                         ref={refAvatar}
-                        onChange={handleInputChange}
                     />
                     <span
                         className="popup__error"
