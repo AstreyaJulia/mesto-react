@@ -5,7 +5,9 @@ import React from "react";
  * popupOpen - всплывашка открыта/закрыта, popupType - класс для разных всплывашек,
  * popupTitle - заголовок всплывашки, popupFormName - name формы,
  * children - содержимое формы всплывашки, submitButtonText - текст на кнопке отправки формы,
- * onSubmit - ф-я на отправку формы
+ * onSubmit - ф-я на отправку формы, onClose - ф-я на закрытие формы
+ * isLoading - состояние загрузки, loadingText - текст на кнопке отправки на время отправки данных
+ * onOverlayClose - ф-я на закрытие по овверлею
  * @returns {JSX.Element}
  * @constructor
  */
@@ -16,6 +18,7 @@ const PopupWithForm = (props) => {
                 props.popupOpen ? "popup popup_opened" : "popup",
                 `popup_${props.popupType}`,
             ].join(" ")}
+            onClick={props.onOverlayClose}
         >
             <div
                 className={[
@@ -47,7 +50,7 @@ const PopupWithForm = (props) => {
                         type="submit"
                         data-value={props.submitButtonText}
                     >
-                        {props.submitButtonText}
+                        {props.isLoading ? props.loadingText : props.submitButtonText}
                     </button>
                 </form>
             </div>

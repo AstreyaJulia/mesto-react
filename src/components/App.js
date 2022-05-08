@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
-//import PopupWithForm from "./PopupWithForm"; // FIXME не забыть удалить
+import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
@@ -21,11 +21,14 @@ function App() {
     /** Состояние массива карточек */
     const [cards, setCards] = useState([]);
 
-    /** Состояние выбранной карточки */
+    /** Состояние выбранной для просмотра карточки */
     const [selectedCard, setSelectedCard] = React.useState({
         name: "",
         link: "",
     });
+
+    /** Состояние выбранной для удаления карточки */
+    const [deleteCard, setDeleteCard] = React.useState({_id: ""});
 
     /** Состояние всплывашки редактирования профиля */
     const [editProfilePopupOpen, setEditProfilePopupOpen] =
@@ -39,8 +42,11 @@ function App() {
         React.useState(false);
 
     /** Состояние всплывашки удаления карточки */
-    /*const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
-        React.useState(false);*/ // FIXME не забыть включить
+    const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
+        React.useState(false);
+
+    /** Состояние сохранения данных */
+    const [isLoading, setIsLoading] = React.useState(false);
 
     /** Устанавливает выбранную карточку по нажатию
      * @param card */
@@ -64,18 +70,19 @@ function App() {
     }
 
     /** Открывает всплывашку удаления карточки */
-    // FIXME отключена, удаляет без подтверждения
-    //function handleDeletePlaceClick() {
-    //    setDeletePlacePopupOpen(true);
-    //}
+    function handleDeletePlaceClick(card) {
+        setDeleteCard(card);
+        setDeletePlacePopupOpen(true);
+    }
 
     /** Закрывает все всплывашки / сбрасывает состояния */
     function closeAllPopups() {
         setSelectedCard({name: "", link: ""});
+        setDeleteCard({_id: ""});
         setEditProfilePopupOpen(false);
         setNewPlacePopupOpen(false);
         setUpdateAvatarPopupOpen(false);
-        //setDeletePlacePopupOpen(false); // FIXME не забыть включить
+        setDeletePlacePopupOpen(false);
     }
 
     /** Ставит/удаляет лайк
@@ -92,47 +99,72 @@ function App() {
             .catch((err) => console.log(err));
     }
 
-    /** Удаляет карточку
-     * @param card - объект карточки */
-    function handleCardDelete(card) {
-        api.deleteCard(card._id)
+    /** Удаляет карточку - объект карточки */
+    function handleCardDelete(evt) {
+        evt.preventDefault();
+        setIsLoading(true);
+        api.deleteCard(deleteCard._id)
             .then(() => {
-                setCards(cards.filter((currentCard) => currentCard !== card));
+                setCards(cards.filter((currentCard) => currentCard._id !== deleteCard._id && currentCard));
+                closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log("Ошибка" + err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Отправка данных пользователя, обновление стейта currentUser
      * @param inputValues - введенные значения */
     function handleUpdateUser(inputValues) {
+        setIsLoading(true);
         api.sendUserInfo(inputValues.name, inputValues.about)
             .then((user) => {
                 setCurrentUser(user);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Обновление аватара, обновление стейта currentUser
      * @param avatar - аватар */
     function handleUpdateAvatar(avatar) {
+        setIsLoading(true);
         api.updateAvatar(avatar.avatar)
             .then((avatar) => {
                 setCurrentUser(avatar);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Добавление карточки, обновление стейта cards
      * @param inputValues - введенные значения */
     function handleAddPlaceSubmit(inputValues) {
+        setIsLoading(true);
         api.sendCard(inputValues.name, inputValues.link)
             .then((data) => {
                 setCards([data, ...cards]);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
+    /** Закрытие модала по оверлею
+     * @param evt */
+    function handleOverlayClose(evt) {
+        if (evt.target.classList.contains("popup")) {
+            closeAllPopups();
+        }
     }
 
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
@@ -153,6 +185,17 @@ function App() {
             .catch((err) => console.log(err));
     }, []);
 
+    /** Закрытие модала по ESC */
+    useEffect(() => {
+        const closeByEsc = (evt) => {
+            if (evt.key === "Escape") {
+                closeAllPopups();
+            }
+        };
+        document.addEventListener("keydown", closeByEsc);
+        return () => document.removeEventListener("keydown", closeByEsc);
+    }, []);
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="App">
@@ -163,7 +206,7 @@ function App() {
                     onEditProfile={handleEditProfileClick} // редактирование профиля
                     onNewPlace={handleNewPlaceClick} // добавление карточки
                     onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
-                    onDeleteCard={handleCardDelete} // удаление карточки
+                    onDeleteCard={handleDeletePlaceClick} // удаление карточки
                     onCardLike={handleCardLike} // лайк/дизлайк
                 />
                 <Footer/>
@@ -173,29 +216,48 @@ function App() {
                     popupOpen={editProfilePopupOpen}
                     onClose={closeAllPopups}
                     onUpdateUser={handleUpdateUser}
+                    isLoading={isLoading}
+                    loadingText="Сохранение..."
+                    onOverlayClose={handleOverlayClose}
                 />
 
                 {/** Всплывашка добавления новой карточки */}
                 <AddPlacePopup
                     popupOpen={newPlacePopupOpen}
                     onClose={closeAllPopups}
-                    onAddPlace={handleAddPlaceSubmit}>
+                    onAddPlace={handleAddPlaceSubmit}
+                    isLoading={isLoading}
+                    loadingText="Добавление..."
+                    onOverlayClose={handleOverlayClose}
+                >
                 </AddPlacePopup>
                 {/** Всплывашка просмотра карточки */}
-                <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
+                <ImagePopup
+                    card={selectedCard}
+                    onClose={closeAllPopups}
+                    onOverlayClose={handleOverlayClose}
+                />
                 {/** Всплывашка удаления карточки */}
-                {/*<PopupWithForm
+                <PopupWithForm
                     popupOpen={deletePlacePopupOpen}
                     popupType="delete-place"
                     popupTitle="Вы уверены?"
                     submitButtonText="Да"
                     onClose={closeAllPopups}
-                /> */}
+                    isLoading={isLoading}
+                    loadingText="Удаление..."
+                    onOverlayClose={handleOverlayClose}
+                    onSubmit={handleCardDelete}
+                />
                 {/** Всплывашка редактирования аватара */}
                 <EditAvatarPopup
                     popupOpen={updateAvatarPopupOpen}
                     onClose={closeAllPopups}
-                    onUpdateAvatar={handleUpdateAvatar}>
+                    onUpdateAvatar={handleUpdateAvatar}
+                    isLoading={isLoading}
+                    loadingText="Сохранение..."
+                    onOverlayClose={handleOverlayClose}
+                >
                 </EditAvatarPopup>
             </div>
         </CurrentUserContext.Provider>

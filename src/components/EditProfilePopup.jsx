@@ -41,6 +41,9 @@ const EditProfilePopup = (props) => {
             submitButtonText="Сохранить"
             onClose={props.onClose}
             onSubmit={handleSubmit}
+            isLoading={props.isLoading}
+            loadingText={props.loadingText}
+            onOverlayClose={props.onOverlayClose}
         >
             <fieldset className="popup__fieldset">
                 <label className="popup__input-group" htmlFor="profile_name">
