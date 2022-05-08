@@ -42,6 +42,9 @@ function App() {
     /*const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
         React.useState(false);*/ // FIXME не забыть включить
 
+    /** Состояние сохранения данных */
+    const [isLoading, setIsLoading] = React.useState(false);
+
     /** Устанавливает выбранную карточку по нажатию
      * @param card */
     function handleCardClick(card) {
@@ -95,44 +98,60 @@ function App() {
     /** Удаляет карточку
      * @param card - объект карточки */
     function handleCardDelete(card) {
+        setIsLoading(true);
         api.deleteCard(card._id)
             .then(() => {
                 setCards(cards.filter((currentCard) => currentCard !== card));
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Отправка данных пользователя, обновление стейта currentUser
      * @param inputValues - введенные значения */
     function handleUpdateUser(inputValues) {
+        setIsLoading(true);
         api.sendUserInfo(inputValues.name, inputValues.about)
             .then((user) => {
                 setCurrentUser(user);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Обновление аватара, обновление стейта currentUser
      * @param avatar - аватар */
     function handleUpdateAvatar(avatar) {
+        setIsLoading(true);
         api.updateAvatar(avatar.avatar)
             .then((avatar) => {
                 setCurrentUser(avatar);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Добавление карточки, обновление стейта cards
      * @param inputValues - введенные значения */
     function handleAddPlaceSubmit(inputValues) {
+        setIsLoading(true);
         api.sendCard(inputValues.name, inputValues.link)
             .then((data) => {
                 setCards([data, ...cards]);
                 closeAllPopups();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
@@ -173,13 +192,18 @@ function App() {
                     popupOpen={editProfilePopupOpen}
                     onClose={closeAllPopups}
                     onUpdateUser={handleUpdateUser}
+                    isLoading={isLoading}
+                    loadingText="Сохранение..."
                 />
 
                 {/** Всплывашка добавления новой карточки */}
                 <AddPlacePopup
                     popupOpen={newPlacePopupOpen}
                     onClose={closeAllPopups}
-                    onAddPlace={handleAddPlaceSubmit}>
+                    onAddPlace={handleAddPlaceSubmit}
+                    isLoading={isLoading}
+                    loadingText="Добавление..."
+                >
                 </AddPlacePopup>
                 {/** Всплывашка просмотра карточки */}
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
@@ -190,12 +214,17 @@ function App() {
                     popupTitle="Вы уверены?"
                     submitButtonText="Да"
                     onClose={closeAllPopups}
+                    isLoading={isLoading}
+                    loadingText="Удаление..."
                 /> */}
                 {/** Всплывашка редактирования аватара */}
                 <EditAvatarPopup
                     popupOpen={updateAvatarPopupOpen}
                     onClose={closeAllPopups}
-                    onUpdateAvatar={handleUpdateAvatar}>
+                    onUpdateAvatar={handleUpdateAvatar}
+                    isLoading={isLoading}
+                    loadingText="Сохранение..."
+                >
                 </EditAvatarPopup>
             </div>
         </CurrentUserContext.Provider>

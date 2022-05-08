@@ -35,6 +35,8 @@ const AddPlacePopup = (props) => {
             submitButtonText="Создать"
             onClose={props.onClose}
             onSubmit={handleSubmit}
+            isLoading={props.isLoading}
+            loadingText={props.loadingText}
         >
             <fieldset className="popup__fieldset">
                 <label
