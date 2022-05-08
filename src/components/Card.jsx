@@ -1,5 +1,5 @@
 import React from 'react';
-import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
+import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 /** Карточка изображения
  * @param props

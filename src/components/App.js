@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
+import EditProfilePopup from "./EditProfilePopup";
 
 /**
  * @returns {JSX.Element}
  * @constructor
  */
 function App() {
-
     /** Состояние текущего пользователя */
     const [currentUser, setCurrentUser] = useState({});
 
@@ -20,20 +20,25 @@ function App() {
     const [cards, setCards] = useState([]);
 
     /** Состояние выбранной карточки */
-    const [selectedCard, setSelectedCard] = React.useState({name: "", link: ""});
+    const [selectedCard, setSelectedCard] = React.useState({
+        name: "",
+        link: "",
+    });
 
     /** Состояние всплывашки редактирования профиля */
-    const [editProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
+    const [editProfilePopupOpen, setEditProfilePopupOpen] =
+        React.useState(false);
 
     /** Состояние всплывашки добавления карточки */
     const [newPlacePopupOpen, setNewPlacePopupOpen] = React.useState(false);
 
     /** Состояние всплывашки редактирования аватара */
-    const [updateAvatarPopupOpen, setUpdateAvatarPopupOpen] = React.useState(false);
+    const [updateAvatarPopupOpen, setUpdateAvatarPopupOpen] =
+        React.useState(false);
 
     /** Состояние всплывашки удаления карточки */
-    const [deletePlacePopupOpen, setDeletePlacePopupOpen] = React.useState(false);
-
+    const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
+        React.useState(false);
 
     /** Устанавливает выбранную карточку по нажатию
      * @param card */
@@ -64,7 +69,7 @@ function App() {
 
     /** Закрывает все всплывашки / сбрасывает состояния */
     function closeAllPopups() {
-        setSelectedCard({name: '', link: ''});
+        setSelectedCard({name: "", link: ""});
         setEditProfilePopupOpen(false);
         setNewPlacePopupOpen(false);
         setUpdateAvatarPopupOpen(false);
@@ -74,11 +79,13 @@ function App() {
     /** Ставит/удаляет лайк
      * @param card - объект карточки */
     function handleCardLike(card) {
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
+        const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
         api.changeLikeCardStatus(card._id, !isLiked)
             .then((newCard) => {
-                setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+                setCards((state) =>
+                    state.map((c) => (c._id === card._id ? newCard : c))
+                );
             })
             .catch((err) => console.log(err));
     }
@@ -88,7 +95,18 @@ function App() {
     function handleCardDelete(card) {
         api.deleteCard(card._id)
             .then(() => {
-                setCards(cards.filter(currentCard => currentCard !== card));
+                setCards(cards.filter((currentCard) => currentCard !== card));
+            })
+            .catch((err) => console.log(err));
+    }
+
+    /** Отправка данных пользователя, обновление стейта currentUser
+     * @param inputValues - введенные значения */
+    function handleUpdateUser(inputValues) {
+        api.sendUserInfo(inputValues)
+            .then((userInfo) => {
+                setCurrentUser(userInfo);
+                closeAllPopups();
             })
             .catch((err) => console.log(err));
     }
@@ -96,7 +114,7 @@ function App() {
     /** Заглушка, чтоб реакт не сыпал ошибки в консоли */
     // FIXME не забыть удалить
     function handleInputChange(evt) {
-        console.log(evt)
+        console.log(evt);
     }
 
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
@@ -105,7 +123,7 @@ function App() {
             .then((res) => {
                 setCurrentUser(res);
             })
-            .catch((err) => console.log(err))
+            .catch((err) => console.log(err));
     }, []);
 
     /** Получаем массив карточек, пишем в состояние cards */
@@ -131,60 +149,104 @@ function App() {
                     onCardLike={handleCardLike} // лайк/дизлайк
                 />
                 <Footer/>
+
                 {/** Всплывашка редактирования профиля */}
-                <PopupWithForm popupOpen={editProfilePopupOpen} popupType="edit_profile"
-                               popupTitle="Редактировать профиль"
-                               popupFormName="profileForm" submitButtonText="Сохранить" onClose={closeAllPopups}>
-                    <fieldset className="popup__fieldset">
-                        <label className="popup__input-group" htmlFor="profile_name">
-                            <input className="popup__input" type="text" placeholder="Имя" value="" name="name"
-                                   id="profile_name" required minLength="2" maxLength="40"
-                                   onChange={handleInputChange}/>
-                            <span className="popup__error" id="profile_name-error"/>
-                        </label>
-                        <label className="popup__input-group" htmlFor="profile_about">
-                            <input className="popup__input" type="text" placeholder="Подпись" value="" name="about"
-                                   id="profile_about" required minLength="2" maxLength="400"
-                                   onChange={handleInputChange}/>
-                            <span className="popup__error" id="profile_about-error"/>
-                        </label>
-                    </fieldset>
-                </PopupWithForm>
+                <EditProfilePopup
+                    isOpen={editProfilePopupOpen}
+                    onClose={closeAllPopups}
+                    onUpdateUser={handleUpdateUser}
+                />
+
                 {/** Всплывашка добавления новой карточки */}
-                <PopupWithForm popupOpen={newPlacePopupOpen} popupType="new-place" popupTitle="Новое место"
-                               popupFormName="newPlaceForm"
-                               submitButtonText="Создать" onClose={closeAllPopups}>
+                <PopupWithForm
+                    popupOpen={newPlacePopupOpen}
+                    popupType="new-place"
+                    popupTitle="Новое место"
+                    popupFormName="newPlaceForm"
+                    submitButtonText="Создать"
+                    onClose={closeAllPopups}
+                >
                     <fieldset className="popup__fieldset">
-                        <label className="popup__input-group" htmlFor="place_name">
-                            <input className="popup__input" type="text" placeholder="Имя" value="" name="name"
-                                   id="place_name" required minLength="2" maxLength="30" onChange={handleInputChange}/>
-                            <span className="popup__error" id="place_name-error"/>
+                        <label
+                            className="popup__input-group"
+                            htmlFor="place_name"
+                        >
+                            <input
+                                className="popup__input"
+                                type="text"
+                                placeholder="Имя"
+                                value=""
+                                name="name"
+                                id="place_name"
+                                required
+                                minLength="2"
+                                maxLength="30"
+                                onChange={handleInputChange}
+                            />
+                            <span
+                                className="popup__error"
+                                id="place_name-error"
+                            />
                         </label>
-                        <label className="popup__input-group" htmlFor="place_url">
-                            <input className="popup__input" type="url" placeholder="Ссылка на место" value=""
-                                   name="link"
-                                   id="place_url"
-                                   required onChange={handleInputChange}/>
-                            <span className="popup__error" id="place_url-error"/>
+                        <label
+                            className="popup__input-group"
+                            htmlFor="place_url"
+                        >
+                            <input
+                                className="popup__input"
+                                type="url"
+                                placeholder="Ссылка на место"
+                                value=""
+                                name="link"
+                                id="place_url"
+                                required
+                                onChange={handleInputChange}
+                            />
+                            <span
+                                className="popup__error"
+                                id="place_url-error"
+                            />
                         </label>
                     </fieldset>
                 </PopupWithForm>
                 {/** Всплывашка просмотра карточки */}
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
                 {/** Всплывашка удаления карточки */}
-                <PopupWithForm popupOpen={deletePlacePopupOpen} popupType="delete-place" popupTitle="Вы уверены?"
-                               submitButtonText="Да" onClose={closeAllPopups}>
-                </PopupWithForm>
+                <PopupWithForm
+                    popupOpen={deletePlacePopupOpen}
+                    popupType="delete-place"
+                    popupTitle="Вы уверены?"
+                    submitButtonText="Да"
+                    onClose={closeAllPopups}
+                />
                 {/** Всплывашка редактирования аватара */}
-                <PopupWithForm popupOpen={updateAvatarPopupOpen} popupType="update-avatar" popupTitle="Обновить аватар"
-                               popupFormName="updateAvatarForm" submitButtonText="Сохранить" onClose={closeAllPopups}>
+                <PopupWithForm
+                    popupOpen={updateAvatarPopupOpen}
+                    popupType="update-avatar"
+                    popupTitle="Обновить аватар"
+                    popupFormName="updateAvatarForm"
+                    submitButtonText="Сохранить"
+                    onClose={closeAllPopups}
+                >
                     <fieldset className="popup__fieldset">
-                        <label className="popup__input-group" htmlFor="avatar_url">
-                            <input className="popup__input" type="url" placeholder="Ссылка на аватар" value=""
-                                   name="avatar"
-                                   id="avatar_url"
-                                   required onChange={handleInputChange}/>
-                            <span className="popup__error" id="avatar_url-error"/>
+                        <label
+                            className="popup__input-group"
+                            htmlFor="avatar_url"
+                        >
+                            <input
+                                className="popup__input"
+                                type="url"
+                                placeholder="Ссылка на аватар"
+                                value=""
+                                name="avatar"
+                                id="avatar_url"
+                                required
+                                onChange={handleInputChange}
+                            />
+                            <span
+                                className="popup__error"
+                                id="avatar_url-error"
+                            />
                         </label>
                     </fieldset>
                 </PopupWithForm>
