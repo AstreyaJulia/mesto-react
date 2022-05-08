@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
-//import PopupWithForm from "./PopupWithForm"; // FIXME не забыть удалить
+import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
@@ -21,11 +21,14 @@ function App() {
     /** Состояние массива карточек */
     const [cards, setCards] = useState([]);
 
-    /** Состояние выбранной карточки */
+    /** Состояние выбранной для просмотра карточки */
     const [selectedCard, setSelectedCard] = React.useState({
         name: "",
         link: "",
     });
+
+    /** Состояние выбранной для удаления карточки */
+    const [deleteCard, setDeleteCard] = React.useState({_id: ""});
 
     /** Состояние всплывашки редактирования профиля */
     const [editProfilePopupOpen, setEditProfilePopupOpen] =
@@ -39,8 +42,8 @@ function App() {
         React.useState(false);
 
     /** Состояние всплывашки удаления карточки */
-    /*const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
-        React.useState(false);*/ // FIXME не забыть включить
+    const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
+        React.useState(false);
 
     /** Состояние сохранения данных */
     const [isLoading, setIsLoading] = React.useState(false);
@@ -67,18 +70,19 @@ function App() {
     }
 
     /** Открывает всплывашку удаления карточки */
-    // FIXME отключена, удаляет без подтверждения
-    //function handleDeletePlaceClick() {
-    //    setDeletePlacePopupOpen(true);
-    //}
+    function handleDeletePlaceClick(card) {
+        setDeleteCard(card);
+        setDeletePlacePopupOpen(true);
+    }
 
     /** Закрывает все всплывашки / сбрасывает состояния */
     function closeAllPopups() {
         setSelectedCard({name: "", link: ""});
+        setDeleteCard({_id: ""});
         setEditProfilePopupOpen(false);
         setNewPlacePopupOpen(false);
         setUpdateAvatarPopupOpen(false);
-        //setDeletePlacePopupOpen(false); // FIXME не забыть включить
+        setDeletePlacePopupOpen(false);
     }
 
     /** Ставит/удаляет лайк
@@ -95,15 +99,16 @@ function App() {
             .catch((err) => console.log(err));
     }
 
-    /** Удаляет карточку
-     * @param card - объект карточки */
-    function handleCardDelete(card) {
+    /** Удаляет карточку - объект карточки */
+    function handleCardDelete(evt) {
+        evt.preventDefault();
         setIsLoading(true);
-        api.deleteCard(card._id)
+        api.deleteCard(deleteCard._id)
             .then(() => {
-                setCards(cards.filter((currentCard) => currentCard !== card));
+                setCards(cards.filter((currentCard) => currentCard._id !== deleteCard._id && currentCard));
+                closeAllPopups();
             })
-            .catch((err) => console.log(err))
+            .catch((err) => console.log("Ошибка" + err))
             .finally(() => {
                 setIsLoading(false);
             });
@@ -201,7 +206,7 @@ function App() {
                     onEditProfile={handleEditProfileClick} // редактирование профиля
                     onNewPlace={handleNewPlaceClick} // добавление карточки
                     onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
-                    onDeleteCard={handleCardDelete} // удаление карточки
+                    onDeleteCard={handleDeletePlaceClick} // удаление карточки
                     onCardLike={handleCardLike} // лайк/дизлайк
                 />
                 <Footer/>
@@ -233,7 +238,7 @@ function App() {
                     onOverlayClose={handleOverlayClose}
                 />
                 {/** Всплывашка удаления карточки */}
-                {/*<PopupWithForm
+                <PopupWithForm
                     popupOpen={deletePlacePopupOpen}
                     popupType="delete-place"
                     popupTitle="Вы уверены?"
@@ -242,7 +247,8 @@ function App() {
                     isLoading={isLoading}
                     loadingText="Удаление..."
                     onOverlayClose={handleOverlayClose}
-                /> */}
+                    onSubmit={handleCardDelete}
+                />
                 {/** Всплывашка редактирования аватара */}
                 <EditAvatarPopup
                     popupOpen={updateAvatarPopupOpen}
