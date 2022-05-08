@@ -26,15 +26,16 @@ export class Api {
     }
 
     /** Отправляет инфо о пользователе на сервер
-     * @param data - отправляемые данные
+     * @param userName - отправляемые данные
+     * @param userAbout - отправляемые данные
      * @returns {Promise<Response>} - объект с обновленными даннями / текст ошибки */
-    sendUserInfo(data) {
+    sendUserInfo(userName, userAbout) {
         return fetch(`${this._serverURL}/users/me`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
-                name: data.name,
-                about: data.about
+                name: userName,
+                about: userAbout
             })
         })
             .then((res) => this._handlePromiseReturn(res));
@@ -90,32 +91,10 @@ export class Api {
         })
     }
 
-    /** Ставит лайк
+    /** Ставит/удаляет лайк
      * @param cardID - ID карточки
+     * @param cardLiked - boolean, если лайк есть, удаление, нет - установка
      * @returns {Promise<Response>} - объект карточки / текст ошибки */
-    setLike(cardID) {
-        return fetch(`${this._serverURL}/cards/${cardID}/likes`, {
-            method: 'PUT',
-            headers: this._headers
-        })
-            .then((res) => this._handlePromiseReturn(res));
-    }
-
-    /** Удаляет лайк
-     * @param cardID - ID карточки
-     * @returns {Promise<Response>} - объект карточки / текст ошибки */
-    deleteLike(cardID) {
-        return fetch(`${this._serverURL}/cards/${cardID}/likes`, {
-            method: 'DELETE',
-            headers: this._headers
-        })
-            .then((res) => this._handlePromiseReturn(res));
-    }
-
-  /** Ставит/удаляет лайк
-   * @param cardID - ID карточки
-   * @param cardLiked - boolean, если лайк есть, удаление, нет - установка
-   * @returns {Promise<Response>} - объект карточки / текст ошибки */
     changeLikeCardStatus(cardID, cardLiked) {
         return fetch(`${this._serverURL}/cards/${cardID}/likes`, {
             method: cardLiked ? 'DELETE' : 'PUT',

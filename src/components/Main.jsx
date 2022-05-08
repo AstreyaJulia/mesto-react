@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
 
 /** Основной контейнер с содержимым страницы
  * @param props
@@ -8,10 +8,10 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
  * @constructor
  */
 const Main = (props) => {
-    
+
     /** Имя пользователя, подпись пользователя и аватар из контекста currentUser */
     const currentUser = React.useContext(CurrentUserContext);
-    const { name, about, avatar } = currentUser;
+    const {name, about, avatar} = currentUser;
 
     return (
         <main className="content">
@@ -21,7 +21,7 @@ const Main = (props) => {
                     aria-label="Редактировать аватар"
                     onClick={props.onUpdateAvatar}
                 />
-                <img src={avatar} alt={name} className="profile__avatar" />
+                <img src={avatar} alt={name} className="profile__avatar"/>
                 <div className="profile__title-group">
                     <h1 className="profile__title">{name}</h1>
                     <button
@@ -43,15 +43,16 @@ const Main = (props) => {
                 <ul className="photo-cards">
                     {props.cards
                         ? Array.from(props.cards).map((card) => {
-                              return (
-                                  <Card
-                                      card={card}
-                                      key={card._id}
-                                      onCardClick={props.onCardClick} // нажатие на карточку
-                                      onDeleteCard={props.onDeleteCard}
-                                  />
-                              );
-                          })
+                            return (
+                                <Card
+                                    card={card}
+                                    key={card._id}
+                                    onCardClick={props.onCardClick} // нажатие на карточку
+                                    onDeleteCard={props.onDeleteCard}
+                                    onCardLike={props.onCardLike}
+                                />
+                            );
+                        })
                         : null}
                 </ul>
             </section>

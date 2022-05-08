@@ -7,6 +7,7 @@ import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 /**
  * @returns {JSX.Element}
@@ -63,9 +64,9 @@ function App() {
 
     /** Открывает всплывашку удаления карточки */
     // FIXME отключена, удаляет без подтверждения
-    function handleDeletePlaceClick() {
-        setDeletePlacePopupOpen(true);
-    }
+    //function handleDeletePlaceClick() {
+    //    setDeletePlacePopupOpen(true);
+    //}
 
     /** Закрывает все всплывашки / сбрасывает состояния */
     function closeAllPopups() {
@@ -81,7 +82,7 @@ function App() {
     function handleCardLike(card) {
         const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-        api.changeLikeCardStatus(card._id, !isLiked)
+        api.changeLikeCardStatus(card._id, isLiked)
             .then((newCard) => {
                 setCards((state) =>
                     state.map((c) => (c._id === card._id ? newCard : c))
@@ -103,9 +104,20 @@ function App() {
     /** Отправка данных пользователя, обновление стейта currentUser
      * @param inputValues - введенные значения */
     function handleUpdateUser(inputValues) {
-        api.sendUserInfo(inputValues)
-            .then((userInfo) => {
-                setCurrentUser(userInfo);
+        api.sendUserInfo(inputValues.name, inputValues.about)
+            .then((user) => {
+                setCurrentUser(user);
+                closeAllPopups();
+            })
+            .catch((err) => console.log(err));
+    }
+
+    /** Обновление аватара, обновление стейта currentUser
+     * @param avatar - аватар */
+    function handleUpdateAvatar(avatar) {
+        api.updateAvatar(avatar.avatar)
+            .then((avatar) => {
+                setCurrentUser(avatar);
                 closeAllPopups();
             })
             .catch((err) => console.log(err));
@@ -220,36 +232,11 @@ function App() {
                     onClose={closeAllPopups}
                 />
                 {/** Всплывашка редактирования аватара */}
-                <PopupWithForm
+                <EditAvatarPopup
                     popupOpen={updateAvatarPopupOpen}
-                    popupType="update-avatar"
-                    popupTitle="Обновить аватар"
-                    popupFormName="updateAvatarForm"
-                    submitButtonText="Сохранить"
                     onClose={closeAllPopups}
-                >
-                    <fieldset className="popup__fieldset">
-                        <label
-                            className="popup__input-group"
-                            htmlFor="avatar_url"
-                        >
-                            <input
-                                className="popup__input"
-                                type="url"
-                                placeholder="Ссылка на аватар"
-                                value=""
-                                name="avatar"
-                                id="avatar_url"
-                                required
-                                onChange={handleInputChange}
-                            />
-                            <span
-                                className="popup__error"
-                                id="avatar_url-error"
-                            />
-                        </label>
-                    </fieldset>
-                </PopupWithForm>
+                    onUpdateAvatar={handleUpdateAvatar}>
+                </EditAvatarPopup>
             </div>
         </CurrentUserContext.Provider>
     );

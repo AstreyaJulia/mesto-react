@@ -29,7 +29,7 @@ const EditProfilePopup = (props) => {
         evt.preventDefault();
 
         props.onUpdateUser({
-            userName,
+            name: userName,
             about: userAbout,
         });
     }
@@ -46,6 +46,7 @@ const EditProfilePopup = (props) => {
             popupTitle="Редактировать профиль"
             popupFormName="profileForm"
             submitButtonText="Сохранить"
+            onClose={props.onClose}
             onSubmit={handleSubmit}
         >
             <fieldset className="popup__fieldset">
