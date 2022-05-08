@@ -154,6 +154,14 @@ function App() {
             });
     }
 
+    /** Закрытие модала по оверлею
+     * @param evt */
+    function handleOverlayClose(evt) {
+        if (evt.target.classList.contains("popup")) {
+            closeAllPopups();
+        }
+    }
+
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
     useEffect(() => {
         api.getUserInfo()
@@ -172,6 +180,7 @@ function App() {
             .catch((err) => console.log(err));
     }, []);
 
+    /** Закрытие модала по ESC */
     useEffect(() => {
         const closeByEsc = (evt) => {
             if (evt.key === "Escape") {
@@ -181,12 +190,6 @@ function App() {
         document.addEventListener("keydown", closeByEsc);
         return () => document.removeEventListener("keydown", closeByEsc);
     }, []);
-
-    function handleOverlayClose(evt) {
-        if (evt.target.classList.contains("popup")) {
-            closeAllPopups();
-        }
-    }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
