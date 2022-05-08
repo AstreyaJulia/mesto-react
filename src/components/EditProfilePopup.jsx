@@ -3,40 +3,33 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import PopupWithForm from "./PopupWithForm";
 
 const EditProfilePopup = (props) => {
+
     /** Имя пользователя, подпись пользователя из контекста currentUser */
     const currentUser = React.useContext(CurrentUserContext);
     const {name, about} = currentUser;
 
-    /** Стейты имени пользователя и подписи */
-    const [userName, setUserName] = React.useState("");
-    const [userAbout, setUserAbout] = React.useState("");
+    /** Стейт данных пользователя с имени пользователя и подписи */
+    const [userData, setUserData] = React.useState({name: '', about: ''});
 
-    /** Изменяет стейт userName
+    /** Изменяет стейт userData
      * @param evt */
-    function handleUserNameChange(evt) {
-        setUserName(evt.target.value);
-    }
-
-    /** Изменяет стейт userAbout
-     * @param evt */
-    function handleUserAboutChange(evt) {
-        setUserAbout(evt.target.value);
+    function handleUserDataChange(evt) {
+        const {name, value} = evt.target;
+        setUserData({
+            ...userData,
+            [name]: value
+        })
     }
 
     /** Отправка формы
      * @param evt */
     function handleSubmit(evt) {
         evt.preventDefault();
-
-        props.onUpdateUser({
-            name: userName,
-            about: userAbout,
-        });
+        props.onUpdateUser(userData);
     }
 
     React.useEffect(() => {
-        setUserName(name);
-        setUserAbout(about);
+        setUserData({"name": name, "about": about})
     }, [name, about]);
 
     return (
@@ -60,8 +53,8 @@ const EditProfilePopup = (props) => {
                         required
                         minLength="2"
                         maxLength="40"
-                        onChange={handleUserNameChange}
-                        value={userName ? userName : ""}
+                        onChange={handleUserDataChange}
+                        value={userData.name ? userData.name : ""}
                     />
                     <span className="popup__error" id="profile_name-error"/>
                 </label>
@@ -75,8 +68,8 @@ const EditProfilePopup = (props) => {
                         required
                         minLength="2"
                         maxLength="400"
-                        onChange={handleUserAboutChange}
-                        value={userAbout ? userAbout : ""}
+                        onChange={handleUserDataChange}
+                        value={userData.about ? userData.about : ""}
                     />
                     <span className="popup__error" id="profile_about-error"/>
                 </label>

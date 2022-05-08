@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
+//import PopupWithForm from "./PopupWithForm"; // FIXME не забыть удалить
 import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
@@ -39,8 +39,8 @@ function App() {
         React.useState(false);
 
     /** Состояние всплывашки удаления карточки */
-    const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
-        React.useState(false);
+    /*const [deletePlacePopupOpen, setDeletePlacePopupOpen] =
+        React.useState(false);*/ // FIXME не забыть включить
 
     /** Устанавливает выбранную карточку по нажатию
      * @param card */
@@ -75,7 +75,7 @@ function App() {
         setEditProfilePopupOpen(false);
         setNewPlacePopupOpen(false);
         setUpdateAvatarPopupOpen(false);
-        setDeletePlacePopupOpen(false);
+        //setDeletePlacePopupOpen(false); // FIXME не забыть включить
     }
 
     /** Ставит/удаляет лайк
@@ -184,13 +184,13 @@ function App() {
                 {/** Всплывашка просмотра карточки */}
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
                 {/** Всплывашка удаления карточки */}
-                <PopupWithForm
+                {/*<PopupWithForm
                     popupOpen={deletePlacePopupOpen}
                     popupType="delete-place"
                     popupTitle="Вы уверены?"
                     submitButtonText="Да"
                     onClose={closeAllPopups}
-                />
+                /> */}
                 {/** Всплывашка редактирования аватара */}
                 <EditAvatarPopup
                     popupOpen={updateAvatarPopupOpen}

@@ -45,8 +45,10 @@ const Card = (props) => {
                 <div className="photo-card__footer">
                     <p className="photo-card__title">{name}</p>
                     <div className="photo-card__like-container">
-                        <button className={["photo-card__like-button button", isLiked ? "photo-card__like-button_active" : ""].join(' ')} type="button"
-                                aria-label="Поставить лайк" onClick={handleLikeClick}/>
+                        <button
+                            className={["photo-card__like-button button", isLiked ? "photo-card__like-button_active" : ""].join(' ')}
+                            type="button"
+                            aria-label="Поставить лайк" onClick={handleLikeClick}/>
                         <p className="photo-card__like-counter">{likes.length}</p>
                     </div>
                 </div>

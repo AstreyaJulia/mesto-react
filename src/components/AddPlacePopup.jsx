@@ -3,34 +3,27 @@ import PopupWithForm from "./PopupWithForm";
 
 const AddPlacePopup = (props) => {
 
-    /** Стейты названия карточки и ссылки на изображение */
-    const [cardName, setCardName] = React.useState('');
-    const [cardLink, setCardLink] = React.useState('');
+    /** Стейт карточки с названием и ссылкой на изображение */
+    const [card, setCard] = React.useState({name: '', link: ''});
 
     React.useEffect(() => {
-        setCardName('');
-        setCardLink('');
+        setCard({name: '', link: ''});
     }, [props.popupOpen])
 
-    /** Изменяет стейт cardName */
-    function handleCardNameChange(evt) {
-        setCardName(evt.target.value);
-    }
-
-    /** Изменяет стейт cardLink */
-    function handleCardLinkChange(evt) {
-        setCardLink(evt.target.value);
+    /** Изменяет стейт card */
+    function handleCardChange(evt) {
+        const {name, value} = evt.target;
+        setCard({
+            ...card,
+            [name]: value
+        })
     }
 
     /** Отправка формы
      * @param evt */
     function handleSubmit(evt) {
         evt.preventDefault();
-
-        props.onAddPlace({
-            name: cardName,
-            link: cardLink
-        });
+        props.onAddPlace(card);
     }
 
     return (
@@ -52,13 +45,13 @@ const AddPlacePopup = (props) => {
                         className="popup__input"
                         type="text"
                         placeholder="Имя"
-                        value={cardName ? cardName : ""}
+                        value={card.name ? card.name : ""}
                         name="name"
                         id="place_name"
                         required
                         minLength="2"
                         maxLength="30"
-                        onChange={handleCardNameChange}
+                        onChange={handleCardChange}
                     />
                     <span
                         className="popup__error"
@@ -73,11 +66,11 @@ const AddPlacePopup = (props) => {
                         className="popup__input"
                         type="url"
                         placeholder="Ссылка на место"
-                        value={cardLink ? cardLink : ""}
+                        value={card.link ? card.link : ""}
                         name="link"
                         id="place_url"
                         required
-                        onChange={handleCardLinkChange}
+                        onChange={handleCardChange}
                     />
                     <span
                         className="popup__error"
