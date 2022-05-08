@@ -8,6 +8,7 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import {api} from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 /**
  * @returns {JSX.Element}
@@ -123,10 +124,15 @@ function App() {
             .catch((err) => console.log(err));
     }
 
-    /** Заглушка, чтоб реакт не сыпал ошибки в консоли */
-    // FIXME не забыть удалить
-    function handleInputChange(evt) {
-        console.log(evt);
+    /** Добавление карточки, обновление стейта cards
+     * @param inputValues - введенные значения */
+    function handleAddPlaceSubmit(inputValues) {
+        api.sendCard(inputValues.name, inputValues.link)
+            .then((data) => {
+                setCards([data, ...cards]);
+                closeAllPopups();
+            })
+            .catch((err) => console.log(err));
     }
 
     /** Получаем данные залогиненного пользователя, пишем в состояние currentUser */
@@ -157,70 +163,24 @@ function App() {
                     onEditProfile={handleEditProfileClick} // редактирование профиля
                     onNewPlace={handleNewPlaceClick} // добавление карточки
                     onUpdateAvatar={handleUpdateAvatarClick} // редактирование аватара
-                    onCardDelete={handleCardDelete} // удаление карточки
+                    onDeleteCard={handleCardDelete} // удаление карточки
                     onCardLike={handleCardLike} // лайк/дизлайк
                 />
                 <Footer/>
 
                 {/** Всплывашка редактирования профиля */}
                 <EditProfilePopup
-                    isOpen={editProfilePopupOpen}
+                    popupOpen={editProfilePopupOpen}
                     onClose={closeAllPopups}
                     onUpdateUser={handleUpdateUser}
                 />
 
                 {/** Всплывашка добавления новой карточки */}
-                <PopupWithForm
+                <AddPlacePopup
                     popupOpen={newPlacePopupOpen}
-                    popupType="new-place"
-                    popupTitle="Новое место"
-                    popupFormName="newPlaceForm"
-                    submitButtonText="Создать"
                     onClose={closeAllPopups}
-                >
-                    <fieldset className="popup__fieldset">
-                        <label
-                            className="popup__input-group"
-                            htmlFor="place_name"
-                        >
-                            <input
-                                className="popup__input"
-                                type="text"
-                                placeholder="Имя"
-                                value=""
-                                name="name"
-                                id="place_name"
-                                required
-                                minLength="2"
-                                maxLength="30"
-                                onChange={handleInputChange}
-                            />
-                            <span
-                                className="popup__error"
-                                id="place_name-error"
-                            />
-                        </label>
-                        <label
-                            className="popup__input-group"
-                            htmlFor="place_url"
-                        >
-                            <input
-                                className="popup__input"
-                                type="url"
-                                placeholder="Ссылка на место"
-                                value=""
-                                name="link"
-                                id="place_url"
-                                required
-                                onChange={handleInputChange}
-                            />
-                            <span
-                                className="popup__error"
-                                id="place_url-error"
-                            />
-                        </label>
-                    </fieldset>
-                </PopupWithForm>
+                    onAddPlace={handleAddPlaceSubmit}>
+                </AddPlacePopup>
                 {/** Всплывашка просмотра карточки */}
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
                 {/** Всплывашка удаления карточки */}

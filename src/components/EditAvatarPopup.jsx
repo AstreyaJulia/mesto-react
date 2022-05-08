@@ -21,11 +21,11 @@ const EditAvatarPopup = (props) => {
 
     React.useEffect(() => {
         refAvatar.current.value = '';
-    }, [props.isOpen]);
+    }, [props.popupOpen]);
 
     return (
         <PopupWithForm
-            popupOpen={props.isOpen}
+            popupOpen={props.popupOpen}
             popupType="update-avatar"
             popupTitle="Обновить аватар"
             popupFormName="updateAvatarForm"

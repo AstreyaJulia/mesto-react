@@ -41,7 +41,7 @@ const EditProfilePopup = (props) => {
 
     return (
         <PopupWithForm
-            popupOpen={props.isOpen}
+            popupOpen={props.popupOpen}
             popupType="edit_profile"
             popupTitle="Редактировать профиль"
             popupFormName="profileForm"

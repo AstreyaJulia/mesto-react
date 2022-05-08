@@ -29,7 +29,7 @@ const Card = (props) => {
 
     /** Удаление карточки */
     function handleDeleteClick() {
-        props.onCardDelete(props.card);
+        props.onDeleteCard(props.card);
     }
 
     return (

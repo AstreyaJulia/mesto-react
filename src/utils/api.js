@@ -67,15 +67,16 @@ export class Api {
     }
 
     /** Отправляет данные о новой карточке на сервер
-     * @param data - объект с данными карточки
+     * @param cardName - отправляемые данные
+     * @param cardLink - отправляемые данные
      * @returns {Promise<Response>} - объект карточки / текст ошибки */
-    sendCard(data) {
+    sendCard(cardName, cardLink) {
         return fetch(`${this._serverURL}/cards`, {
             method: 'POST',
             headers: this._headers,
             body: JSON.stringify({
-                name: data.name,
-                link: data.link
+                name: cardName,
+                link: cardLink
             })
         })
             .then((res) => this._handlePromiseReturn(res));
