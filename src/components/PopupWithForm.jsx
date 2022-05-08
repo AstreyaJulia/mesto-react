@@ -7,6 +7,7 @@ import React from "react";
  * children - содержимое формы всплывашки, submitButtonText - текст на кнопке отправки формы,
  * onSubmit - ф-я на отправку формы, onClose - ф-я на закрытие формы
  * isLoading - состояние загрузки, loadingText - текст на кнопке отправки на время отправки данных
+ * onOverlayClose - ф-я на закрытие по овверлею
  * @returns {JSX.Element}
  * @constructor
  */
@@ -17,6 +18,7 @@ const PopupWithForm = (props) => {
                 props.popupOpen ? "popup popup_opened" : "popup",
                 `popup_${props.popupType}`,
             ].join(" ")}
+            onClick={props.onOverlayClose}
         >
             <div
                 className={[

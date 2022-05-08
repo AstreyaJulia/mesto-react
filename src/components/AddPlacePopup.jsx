@@ -37,6 +37,7 @@ const AddPlacePopup = (props) => {
             onSubmit={handleSubmit}
             isLoading={props.isLoading}
             loadingText={props.loadingText}
+            onOverlayClose={props.onOverlayClose}
         >
             <fieldset className="popup__fieldset">
                 <label

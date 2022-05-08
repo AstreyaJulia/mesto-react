@@ -3,6 +3,7 @@ import React from 'react';
 /** Всплывашка с изображением
  * @param props:
  * card - объект карточки
+ * onClose - ф-я на закрытие формы, onOverlayClose - ф-я на закрытие по овверлею
  * @returns {JSX.Element}
  * @constructor
  */
@@ -12,7 +13,10 @@ const ImagePopup = (props) => {
     const {name, link} = props.card;
 
     return (
-        <div className={link !== '' ? "popup popup_opened popup_view_image" : "popup popup_view_image"}>
+        <div
+            className={link !== '' ? "popup popup_opened popup_view_image" : "popup popup_view_image"}
+            onClick={props.onOverlayClose}
+        >
             <div className="popup__container popup__container_view_image">
                 <button className="popup__close-button button" type="button"
                         aria-label="Закрыть всплывающее окно" onClick={props.onClose}/>

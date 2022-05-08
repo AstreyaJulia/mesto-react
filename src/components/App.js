@@ -172,6 +172,22 @@ function App() {
             .catch((err) => console.log(err));
     }, []);
 
+    useEffect(() => {
+        const closeByEsc = (evt) => {
+            if (evt.key === "Escape") {
+                closeAllPopups();
+            }
+        };
+        document.addEventListener("keydown", closeByEsc);
+        return () => document.removeEventListener("keydown", closeByEsc);
+    }, []);
+
+    function handleOverlayClose(evt) {
+        if (evt.target.classList.contains("popup")) {
+            closeAllPopups();
+        }
+    }
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="App">
@@ -194,6 +210,7 @@ function App() {
                     onUpdateUser={handleUpdateUser}
                     isLoading={isLoading}
                     loadingText="Сохранение..."
+                    onOverlayClose={handleOverlayClose}
                 />
 
                 {/** Всплывашка добавления новой карточки */}
@@ -203,10 +220,15 @@ function App() {
                     onAddPlace={handleAddPlaceSubmit}
                     isLoading={isLoading}
                     loadingText="Добавление..."
+                    onOverlayClose={handleOverlayClose}
                 >
                 </AddPlacePopup>
                 {/** Всплывашка просмотра карточки */}
-                <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
+                <ImagePopup
+                    card={selectedCard}
+                    onClose={closeAllPopups}
+                    onOverlayClose={handleOverlayClose}
+                />
                 {/** Всплывашка удаления карточки */}
                 {/*<PopupWithForm
                     popupOpen={deletePlacePopupOpen}
@@ -216,6 +238,7 @@ function App() {
                     onClose={closeAllPopups}
                     isLoading={isLoading}
                     loadingText="Удаление..."
+                    onOverlayClose={handleOverlayClose}
                 /> */}
                 {/** Всплывашка редактирования аватара */}
                 <EditAvatarPopup
@@ -224,6 +247,7 @@ function App() {
                     onUpdateAvatar={handleUpdateAvatar}
                     isLoading={isLoading}
                     loadingText="Сохранение..."
+                    onOverlayClose={handleOverlayClose}
                 >
                 </EditAvatarPopup>
             </div>
